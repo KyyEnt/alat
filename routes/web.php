@@ -54,20 +54,19 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->as('admin.')->grou
     })->name('log.index');
 });
 
-// 5. FITUR KHUSUS PETUGAS
+// FITUR KHUSUS PETUGAS
 Route::middleware(['auth', IsPetugas::class])->prefix('petugas')->as('petugas.')->group(function () {
-    // Route utama petugas langsung diarahkan ke persetujuan
-    Route::get('/', [PetugasController::class, 'menyetujuiPeminjaman'])->name('index');
+    Route::get('/', [PetugasController::class, 'memantauPengembalian'])->name('index');
+    Route::get('/pemantauan', [PetugasController::class, 'memantauPengembalian'])->name('pemantauan');
     Route::get('/persetujuan', [PetugasController::class, 'menyetujuiPeminjaman'])->name('persetujuan');
     
-    // Perbaikan: HTTP Method diubah ke PATCH (sesuai aksi update status)
-    Route::patch('/persetujuan/{id}', [PetugasController::class, 'prosesPersetujuan'])->name('prosesPersetujuan');
+    // UBAH 'prosesPersetujuan' MENJADI 'persetujuan.proses'
+    Route::patch('/persetujuan/{id}', [PetugasController::class, 'prosesPersetujuan'])->name('persetujuan.proses');
     
-    Route::get('/pemantauan', [PetugasController::class, 'memantauPengembalian'])->name('pemantauan');
     Route::get('/laporan/cetak', [PetugasController::class, 'cetakLaporan'])->name('laporan.cetak');
 });
 
-// 6. FITUR KHUSUS PEMINJAM (Dibersihkan dari duplikasi)
+// 6. FITUR KHUSUS PEMINJAM
 Route::middleware(['auth', IsPeminjam::class])->prefix('peminjam')->as('peminjam.')->group(function () {
     Route::get('/peminjaman', [PeminjamController::class, 'index'])->name('index');
     Route::get('/peminjaman/create', [PeminjamController::class, 'create'])->name('create');

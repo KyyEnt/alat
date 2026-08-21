@@ -21,6 +21,6 @@ class PetugasLayout extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.petugas-layout');
+        return view('petugas.pemantauan');
     }
 }

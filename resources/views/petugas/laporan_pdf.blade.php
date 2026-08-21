@@ -28,9 +28,9 @@
             @foreach($laporans as $key => $item)
                 <tr>
                     <td>{{ $key + 1 }}</td>
-                    <td>{{ $item->user->name ?? '-' }}</td>
+                    <td>{{ $item->user->name ?? $item->user->nama ?? '-' }}</td>
                     <td>{{ $item->alat->nama_alat ?? '-' }}</td>
-                    <td>{{ $item->created_at->format('d-m-Y H:i') }}</td>
+                    <td>{{ $item->created_at ? $item->created_at->format('d-m-Y H:i') : '-' }}</td>
                     <td>{{ $item->status }}</td>
                 </tr>
             @endforeach
