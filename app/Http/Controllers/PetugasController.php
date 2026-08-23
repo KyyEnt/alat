@@ -47,21 +47,28 @@ class PetugasController extends Controller
     }
 
 
-// ==========================================
-// HALAMAN PEMANTAUAN
-// ==========================================
-public function memantauPengembalian()
-{
-    $peminjamans = Peminjaman::with([
-        'user',
-        'detailPeminjamans.alat'
-    ])
-    ->latest()
-    ->get();
+    public function showPeminjaman($id)
+    {
+        $peminjaman = Peminjaman::findOrFail($id);
 
-    return view('petugas.pemantauan')
-        ->with('peminjamans', $peminjamans);
-}
+        return view('petugas.peminjaman-detail', compact('peminjaman'));
+    }
+
+    // ==========================================
+    // HALAMAN PEMANTAUAN
+    // ==========================================
+    public function memantauPengembalian()
+    {
+        $peminjamans = Peminjaman::with([
+            'user',
+            'detailPeminjamans.alat'
+        ])
+        ->latest()
+        ->get();
+
+        return view('petugas.pemantauan')
+            ->with('peminjamans', $peminjamans);
+    }
 
 
     // ==========================================

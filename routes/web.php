@@ -54,18 +54,32 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->as('admin.')->grou
     })->name('log.index');
 });
 
-// FITUR KHUSUS PETUGAS
-Route::middleware(['auth', IsPetugas::class])->prefix('petugas')->as('petugas.')->group(function () {
-    Route::get('/', [PetugasController::class, 'memantauPengembalian'])->name('index');
-    Route::get('/pemantauan', [PetugasController::class, 'memantauPengembalian'])->name('pemantauan');
-    Route::get('/persetujuan', [PetugasController::class, 'menyetujuiPeminjaman'])->name('persetujuan');
-    
-    // UBAH 'prosesPersetujuan' MENJADI 'persetujuan.proses'
-    Route::patch('/persetujuan/{id}', [PetugasController::class, 'prosesPersetujuan'])->name('persetujuan.proses');
-    
-    Route::get('/laporan/cetak', [PetugasController::class, 'cetakLaporan'])->name('laporan.cetak');
-});
+// 5. FITUR KHUSUS PETUGAS
+Route::middleware(['auth', IsPetugas::class])
+    ->prefix('petugas')
+    ->as('petugas.')
+    ->group(function () {
 
+        Route::get('/', [PetugasController::class, 'memantauPengembalian'])
+            ->name('index');
+
+        Route::get('/pemantauan', [PetugasController::class, 'memantauPengembalian'])
+            ->name('pemantauan');
+
+        Route::get('/persetujuan', [PetugasController::class, 'menyetujuiPeminjaman'])
+            ->name('persetujuan');
+
+        Route::patch('/persetujuan/{id}', [PetugasController::class, 'prosesPersetujuan'])
+            ->name('persetujuan.proses');
+
+        // DETAIL / LIHAT BERKAS PEMINJAMAN
+        Route::get('/peminjaman/{id}', [PetugasController::class, 'showPeminjaman'])
+            ->name('peminjaman.show');
+
+        Route::get('/laporan/cetak', [PetugasController::class, 'cetakLaporan'])
+            ->name('laporan.cetak');
+    });
+    
 // 6. FITUR KHUSUS PEMINJAM
 Route::middleware(['auth', IsPeminjam::class])->prefix('peminjam')->as('peminjam.')->group(function () {
     Route::get('/peminjaman', [PeminjamController::class, 'index'])->name('index');
