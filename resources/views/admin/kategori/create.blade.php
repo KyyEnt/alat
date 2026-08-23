@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit User - SiAlat</title>
+    <title>Tambah Kategori - SiAlat</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
@@ -86,16 +86,7 @@
             box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.05);
         }
 
-        select.form-control {
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2064748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 12px center;
-            background-size: 16px;
-            padding-right: 36px;
-        }
-
-        .help-text { color: var(--text-light); font-size: 11px; margin-top: 6px; }
+        textarea.form-control { resize: vertical; min-height: 90px; }
 
         .error-text {
             color: var(--danger);
@@ -154,49 +145,28 @@
     <div class="container">
         <div class="form-card">
             <div class="form-header">
-                <h1 class="form-title">Edit Data User</h1>
-                <p class="form-subtitle">Perbarui informasi akun pengguna</p>
+                <h1 class="form-title">Tambah Kategori Baru</h1>
+                <p class="form-subtitle">Isi formulir di bawah untuk membuat kategori alat baru</p>
             </div>
 
-            <form action="{{ route('admin.user.update', $user->id) }}" method="POST">
+            <form action="{{ route('admin.kategori.store') }}" method="POST">
                 @csrf
-                @method('PUT')
 
                 <div class="form-group">
-                    <label for="name">Nama Lengkap</label>
-                    <input type="text" id="name" name="name" class="form-control" value="{{ old('name', $user->name) }}" required>
-                    @error('name') <div class="error-text">{{ $message }}</div> @enderror
+                    <label for="nama_kategori">Nama Kategori</label>
+                    <input type="text" id="nama_kategori" name="nama_kategori" class="form-control" value="{{ old('nama_kategori') }}" placeholder="Contoh: Alat Ukur" required maxlength="50">
+                    @error('nama_kategori') <div class="error-text">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" class="form-control" value="{{ old('email', $user->email) }}" required>
-                    @error('email') <div class="error-text">{{ $message }}</div> @enderror
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Password (Opsional)</label>
-                    <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" autocomplete="new-password">
-                    <div class="help-text">Kosongkan jika tidak ingin mengubah password user.</div>
-                    @error('password') <div class="error-text">{{ $message }}</div> @enderror
-                </div>
-
-                <div class="form-group">
-                    <label for="role_id">Role / Hak Akses</label>
-                    <select id="role_id" name="role_id" class="form-control" required>
-                        <option value="">-- Pilih Role --</option>
-                        @foreach($roles as $role)
-                            <option value="{{ $role->id }}" {{ old('role_id', $user->role_id) == $role->id ? 'selected' : '' }}>
-                                {{ ucfirst($role->nama_role) }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('role_id') <div class="error-text">{{ $message }}</div> @enderror
+                    <label for="keterangan">Keterangan (Opsional)</label>
+                    <textarea id="keterangan" name="keterangan" class="form-control" placeholder="Deskripsi singkat kategori ini">{{ old('keterangan') }}</textarea>
+                    @error('keterangan') <div class="error-text">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="form-actions">
-                    <a href="{{ route('admin.index') }}" class="btn btn-secondary">Batal</a>
-                    <button type="submit" class="btn btn-primary">Perbarui User</button>
+                    <a href="{{ route('admin.kategori.index') }}" class="btn btn-secondary">Batal</a>
+                    <button type="submit" class="btn btn-primary">Simpan Kategori</button>
                 </div>
             </form>
         </div>
