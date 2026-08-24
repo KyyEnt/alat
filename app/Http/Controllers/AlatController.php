@@ -26,12 +26,20 @@ class AlatController extends Controller
             'kategori_id' => 'required|exists:kategoris,id',
             'nama_alat' => 'required|string|max:100',
             'stok' => 'required|integer|min:0',
-            'kondisi' => 'required|in:Baik,Rusak Ringan,Rusak Berat',
+            'kondisi' => 'required|in:baik,rusak_ringan,rusak_berat',
+            'deskripsi' => 'nullable|string',
         ]);
 
-        Alat::create($request->all());
+        Alat::create([
+            'kategori_id' => $request->kategori_id,
+            'kode_alat' => $this->generateKodeAlat(),
+            'nama_alat' => $request->nama_alat,
+            'stok' => $request->stok,
+            'kondisi' => $request->kondisi,
+            'deskripsi' => $request->deskripsi,
+        ]);
 
-        return redirect()->route('alat.index')->with('success', 'Alat berhasil ditambahkan');
+        return redirect()->route('admin.alat.index')->with('success', 'Alat berhasil ditambahkan');
     }
 
     public function edit(Alat $alat)
@@ -46,17 +54,34 @@ class AlatController extends Controller
             'kategori_id' => 'required|exists:kategoris,id',
             'nama_alat' => 'required|string|max:100',
             'stok' => 'required|integer|min:0',
-            'kondisi' => 'required|in:Baik,Rusak Ringan,Rusak Berat',
+            'kondisi' => 'required|in:baik,rusak_ringan,rusak_berat',
+            'deskripsi' => 'nullable|string',
         ]);
 
-        $alat->update($request->all());
+        $alat->update($request->only(['kategori_id', 'nama_alat', 'stok', 'kondisi', 'deskripsi']));
 
-        return redirect()->route('alat.index')->with('success', 'Data alat berhasil diperbarui');
+        return redirect()->route('admin.alat.index')->with('success', 'Data alat berhasil diperbarui');
     }
 
     public function destroy(Alat $alat)
     {
+        if ($alat->detailPeminjamans()->exists()) {
+            return redirect()->route('admin.alat.index')
+                ->with('error', 'Alat tidak dapat dihapus karena memiliki riwayat peminjaman.');
+        }
+
         $alat->delete();
-        return redirect()->route('alat.index')->with('success', 'Alat berhasil dihapus');
+        return redirect()->route('admin.alat.index')->with('success', 'Alat berhasil dihapus');
+    }
+
+    /**
+     * Generate kode_alat unik dengan format ALT-0001.
+     */
+    private function generateKodeAlat(): string
+    {
+        $last = Alat::orderByDesc('id')->first();
+        $nextNumber = $last ? ((int) substr($last->kode_alat, 4)) + 1 : 1;
+
+        return 'ALT-' . str_pad((string) $nextNumber, 4, '0', STR_PAD_LEFT);
     }
 }

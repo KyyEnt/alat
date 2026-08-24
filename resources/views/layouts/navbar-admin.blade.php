@@ -115,10 +115,10 @@
     </a>
 
     <ul class="navbar-menu">
-        <li><a href="{{ route('admin.index') }}" class="nav-link {{ request()->routeIs('admin.index') ? 'active' : '' }}">Dashboard</a></li>
-        <li><a href="#" class="nav-link">Data Alat</a></li>
-        <li><a href="#" class="nav-link">Peminjaman</a></li>
-        <li><a href="#" class="nav-link">User/Petugas</a></li>
+        <li><a href="{{ route('admin.index') }}" class="nav-link {{ request()->routeIs('admin.index') || request()->routeIs('admin.user.*') ? 'active' : '' }}">User</a></li>
+        <li><a href="{{ route('admin.kategori.index') }}" class="nav-link {{ request()->routeIs('admin.kategori.*') ? 'active' : '' }}">Kategori</a></li>
+        <li><a href="{{ route('admin.alat.index') }}" class="nav-link {{ request()->routeIs('admin.alat.*') ? 'active' : '' }}">Data Alat</a></li>
+        <li><a href="{{ route('admin.peminjaman.index') }}" class="nav-link {{ request()->routeIs('admin.peminjaman.*') ? 'active' : '' }}">Peminjaman</a></li>
         
         <li class="user-profile">
             <span class="user-name">{{ auth()->user()->name ?? 'Admin' }}</span>

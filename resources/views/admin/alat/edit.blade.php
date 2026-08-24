@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit User - SiAlat</title>
+    <title>Edit Alat - SiAlat</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
@@ -43,7 +43,7 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
         }
 
-        .form-header { margin-bottom: 24px; }
+        .form-header { margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-start; }
 
         .form-title {
             font-size: 20px;
@@ -56,6 +56,15 @@
             font-size: 12px;
             color: var(--text-muted);
             margin-top: 4px;
+        }
+
+        .kode-badge {
+            font-size: 11px;
+            color: var(--text-muted);
+            background: var(--accent-subtle);
+            padding: 5px 10px;
+            border-radius: 6px;
+            white-space: nowrap;
         }
 
         .form-group { margin-bottom: 20px; }
@@ -86,6 +95,8 @@
             box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.05);
         }
 
+        textarea.form-control { resize: vertical; min-height: 90px; }
+
         select.form-control {
             appearance: none;
             background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2064748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
@@ -95,7 +106,8 @@
             padding-right: 36px;
         }
 
-        .help-text { color: var(--text-light); font-size: 11px; margin-top: 6px; }
+        .form-row { display: flex; gap: 16px; }
+        .form-row .form-group { flex: 1; }
 
         .error-text {
             color: var(--danger);
@@ -154,49 +166,63 @@
     <div class="container">
         <div class="form-card">
             <div class="form-header">
-                <h1 class="form-title">Edit Data User</h1>
-                <p class="form-subtitle">Perbarui informasi akun pengguna</p>
+                <div>
+                    <h1 class="form-title">Edit Alat</h1>
+                    <p class="form-subtitle">Perbarui data alat</p>
+                </div>
+                <span class="kode-badge">{{ $alat->kode_alat }}</span>
             </div>
 
-            <form action="{{ route('admin.user.update', $user->id) }}" method="POST">
+            <form action="{{ route('admin.alat.update', $alat->id) }}" method="POST">
                 @csrf
                 @method('PUT')
 
                 <div class="form-group">
-                    <label for="name">Nama Lengkap</label>
-                    <input type="text" id="name" name="name" class="form-control" value="{{ old('name', $user->name) }}" required>
-                    @error('name') <div class="error-text">{{ $message }}</div> @enderror
+                    <label for="nama_alat">Nama Alat</label>
+                    <input type="text" id="nama_alat" name="nama_alat" class="form-control" value="{{ old('nama_alat', $alat->nama_alat) }}" required maxlength="100">
+                    @error('nama_alat') <div class="error-text">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" class="form-control" value="{{ old('email', $user->email) }}" required>
-                    @error('email') <div class="error-text">{{ $message }}</div> @enderror
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Password (Opsional)</label>
-                    <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" autocomplete="new-password">
-                    <div class="help-text">Kosongkan jika tidak ingin mengubah password user.</div>
-                    @error('password') <div class="error-text">{{ $message }}</div> @enderror
-                </div>
-
-                <div class="form-group">
-                    <label for="role_id">Role / Hak Akses</label>
-                    <select id="role_id" name="role_id" class="form-control" required>
-                        <option value="">-- Pilih Role --</option>
-                        @foreach($roles as $role)
-                            <option value="{{ $role->id }}" {{ old('role_id', $user->role_id) == $role->id ? 'selected' : '' }}>
-                                {{ ucfirst($role->nama_role) }}
+                    <label for="kategori_id">Kategori</label>
+                    <select id="kategori_id" name="kategori_id" class="form-control" required>
+                        <option value="">-- Pilih Kategori --</option>
+                        @foreach($kategoris as $kategori)
+                            <option value="{{ $kategori->id }}" {{ old('kategori_id', $alat->kategori_id) == $kategori->id ? 'selected' : '' }}>
+                                {{ $kategori->nama_kategori }}
                             </option>
                         @endforeach
                     </select>
-                    @error('role_id') <div class="error-text">{{ $message }}</div> @enderror
+                    @error('kategori_id') <div class="error-text">{{ $message }}</div> @enderror
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="stok">Stok</label>
+                        <input type="number" id="stok" name="stok" class="form-control" value="{{ old('stok', $alat->stok) }}" min="0" required>
+                        @error('stok') <div class="error-text">{{ $message }}</div> @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <label for="kondisi">Kondisi</label>
+                        <select id="kondisi" name="kondisi" class="form-control" required>
+                            <option value="baik" {{ old('kondisi', $alat->kondisi) == 'baik' ? 'selected' : '' }}>Baik</option>
+                            <option value="rusak_ringan" {{ old('kondisi', $alat->kondisi) == 'rusak_ringan' ? 'selected' : '' }}>Rusak Ringan</option>
+                            <option value="rusak_berat" {{ old('kondisi', $alat->kondisi) == 'rusak_berat' ? 'selected' : '' }}>Rusak Berat</option>
+                        </select>
+                        @error('kondisi') <div class="error-text">{{ $message }}</div> @enderror
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="deskripsi">Deskripsi (Opsional)</label>
+                    <textarea id="deskripsi" name="deskripsi" class="form-control">{{ old('deskripsi', $alat->deskripsi) }}</textarea>
+                    @error('deskripsi') <div class="error-text">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="form-actions">
-                    <a href="{{ route('admin.index') }}" class="btn btn-secondary">Batal</a>
-                    <button type="submit" class="btn btn-primary">Perbarui User</button>
+                    <a href="{{ route('admin.alat.index') }}" class="btn btn-secondary">Batal</a>
+                    <button type="submit" class="btn btn-primary">Perbarui Alat</button>
                 </div>
             </form>
         </div>

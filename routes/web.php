@@ -7,7 +7,9 @@ use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsPetugas;
 use App\Http\Middleware\IsPeminjam;
 
+
 // Import Controllers
+use App\Http\Controllers\AdminPeminjamanController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
@@ -48,12 +50,14 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->as('admin.')->grou
     Route::resource('kategori', KategoriController::class);
     Route::resource('alat', AlatController::class);
     
-    Route::get('/peminjaman', [PetugasController::class, 'memantauPengembalian'])->name('peminjaman.index');
+    // PEMINJAMAN KHUSUS ADMIN (Dipisah dari Petugas)
+    Route::get('/peminjaman', [AdminPeminjamanController::class, 'index'])->name('peminjaman.index');
+    Route::get('/peminjaman/{id}', [AdminPeminjamanController::class, 'show'])->name('peminjaman.show');
+
     Route::get('/log-aktifitas', function () {
         return view('admin.log.index');
     })->name('log.index');
 });
-
 // 5. FITUR KHUSUS PETUGAS
 Route::middleware(['auth', IsPetugas::class])
     ->prefix('petugas')
