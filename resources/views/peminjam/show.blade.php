@@ -5,7 +5,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h3 class="mb-0">Detail Peminjaman</h3>
-        <a href="{{ route('peminjaman.index') }}" class="btn btn-outline-secondary btn-sm">
+        <a href="{{ route('peminjam.index') }}" class="btn btn-outline-secondary btn-sm">
             ← Kembali
         </a>
     </div>
@@ -83,6 +83,37 @@
         </table>
     </div>
 
+        @if ($peminjaman->status === 'dipinjam' && !$peminjaman->pengembalian)
+        <h5>Kembalikan Alat</h5>
+        <div class="card mb-3">
+            <div class="card-body">
+                <form method="POST" action="{{ route('peminjam.kembali.update', $peminjaman->id) }}">
+                    @csrf
+                    <div class="row g-2 align-items-end">
+                        <div class="col-md-4">
+                            <label class="form-label">Tanggal Kembali</label>
+                            <input type="date" name="tanggal_kembali"
+                                min="{{ $peminjaman->tanggal_pinjam->format('Y-m-d') }}"
+                                value="{{ old('tanggal_kembali', date('Y-m-d')) }}"
+                                class="form-control @error('tanggal_kembali') is-invalid @enderror" required>
+                            @error('tanggal_kembali')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-primary">
+                                Konfirmasi Pengembalian
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-muted small mt-2 mb-0">
+                        Rencana kembali: {{ $peminjaman->tanggal_rencana_kembali->format('d M Y') }}.
+                        Keterlambatan dikenakan denda Rp5.000/hari.
+                    </p>
+                </form>
+            </div>
+        </div>
+    @endif
     {{-- Info pengembalian + denda, jika sudah dikembalikan --}}
     @if ($peminjaman->pengembalian)
         <h5>Info Pengembalian</h5>

@@ -92,7 +92,7 @@ Route::middleware(['auth', IsPeminjam::class])->prefix('peminjam')->as('peminjam
     Route::get('/peminjaman/{id}', [PeminjamController::class, 'show'])->name('show');
     
     Route::get('/alat', [PeminjamController::class, 'daftarAlat'])->name('alat.index');
-    Route::post('/pinjam', [PeminjamController::class, 'ajukanPeminjaman'])->name('pinjam.store');
+    // Route::post('/pinjam', [PeminjamController::class, 'ajukanPeminjaman'])->name('pinjam.store');
     Route::post('/kembali/{id}', [PeminjamController::class, 'kembalikanAlat'])->name('kembali.update');
 });
 
