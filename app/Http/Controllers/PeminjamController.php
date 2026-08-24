@@ -112,7 +112,7 @@ class PeminjamController extends Controller
         }
 
         return redirect()
-            ->route('peminjam.peminjaman.show', $peminjaman->id)
+            ->route('peminjam.show', $peminjaman->id)
             ->with('success', 'Pengajuan peminjaman berhasil dikirim, menunggu persetujuan petugas.');
     }
 
@@ -133,12 +133,8 @@ class PeminjamController extends Controller
      * Hanya bisa dilakukan kalau status peminjaman = "dipinjam" dan
      * peminjaman ini memang milik user yang login.
      */
-    public function kembalikanAlat(Request $request, $id)
+        public function kembalikanAlat(Request $request, $id)
     {
-        $validated = $request->validate([
-            'tanggal_kembali' => 'required|date|after_or_equal:tanggal_pinjam',
-        ]);
-
         $peminjaman = Peminjaman::with('detailPeminjamans')
             ->where('user_id', Auth::id())
             ->findOrFail($id);
@@ -150,6 +146,14 @@ class PeminjamController extends Controller
         if ($peminjaman->pengembalian()->exists()) {
             return back()->with('error', 'Peminjaman ini sudah pernah dikembalikan.');
         }
+
+        $validated = $request->validate([
+            'tanggal_kembali' => [
+                'required',
+                'date',
+                'after_or_equal:' . $peminjaman->tanggal_pinjam->format('Y-m-d'),
+            ],
+        ]);
 
         DB::transaction(function () use ($peminjaman, $validated) {
             $tanggalKembali  = Carbon::parse($validated['tanggal_kembali']);
@@ -168,7 +172,6 @@ class PeminjamController extends Controller
                 'denda'           => $denda,
             ]);
 
-            // Kembalikan stok — pasangan dari pengurangan stok saat approve()
             foreach ($peminjaman->detailPeminjamans as $detail) {
                 Alat::where('id', $detail->alat_id)->increment('stok', $detail->jumlah);
             }
@@ -177,7 +180,7 @@ class PeminjamController extends Controller
         });
 
         return redirect()
-            ->route('peminjam.peminjaman.show', $peminjaman->id)
+            ->route('peminjam.show', $peminjaman->id)
             ->with('success', 'Alat berhasil dikembalikan.');
     }
 }
