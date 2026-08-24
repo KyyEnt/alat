@@ -41,7 +41,7 @@ class Peminjaman extends Model
      */
     public function detailPeminjamans(): HasMany
     {
-        return $this->hasMany(DetailPeminjaman::class);
+        return $this->hasMany(DetailPeminjaman::class, 'peminjaman_id');
     }
 
     /**
@@ -49,36 +49,27 @@ class Peminjaman extends Model
      */
     public function pengembalian(): HasOne
     {
-        return $this->hasOne(Pengembalian::class);
+        return $this->hasOne(Pengembalian::class, 'peminjaman_id');
     }
 
     /**
-     * Mengecek apakah peminjaman masih menunggu persetujuan.
+     * Helper status peminjaman.
      */
     public function isMenunggu(): bool
     {
         return $this->status === 'menunggu';
     }
 
-    /**
-     * Mengecek apakah peminjaman sudah disetujui.
-     */
     public function isDisetujui(): bool
     {
         return $this->status === 'disetujui';
     }
 
-    /**
-     * Mengecek apakah alat sedang dipinjam.
-     */
     public function isDipinjam(): bool
     {
         return $this->status === 'dipinjam';
     }
 
-    /**
-     * Mengecek apakah peminjaman sudah selesai.
-     */
     public function isSelesai(): bool
     {
         return $this->status === 'selesai';

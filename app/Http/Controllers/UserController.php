@@ -54,9 +54,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        // Mengambil seluruh data role agar tidak error 'Undefined variable $roles'
         $roles = Role::all();
-
         return view('admin.edit', compact('user', 'roles'));
     }
 
@@ -77,7 +75,7 @@ class UserController extends Controller
             'role_id' => $request->role_id,
         ];
 
-        // Hanya perbarui password jika diisi
+        // Hanya perbarui password jika inputan diisi
         if ($request->filled('password')) {
             $request->validate([
                 'password' => 'min:6',
