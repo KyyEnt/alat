@@ -17,30 +17,34 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarPeminjam">
-                <ul class="navbar-nav ms-auto align-items-center gap-3">
-                    <li class="nav-item">
-                        <a href="{{ route('peminjam.index') }}" class="nav-link text-light">Beranda</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link text-light">Daftar Alat</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('peminjam.index') }}" class="nav-link active fw-bold text-info">Pinjaman Saya</a>
-                    </li>
-                    
-                    <li class="nav-item d-flex align-items-center gap-3 ps-3 border-start border-secondary">
-                        <span class="small text-secondary fw-bold">
-                            {{ auth()->user()->name ?? 'Peminjam' }}
-                        </span>
-                        
-                        <form method="POST" action="{{ route('logout') }}" class="d-inline">
-                            @csrf
-                            <button type="submit" class="btn btn-outline-danger btn-sm">
-                                Keluar
-                            </button>
-                        </form>
-                    </li>
-                </ul>
+                            <ul class="navbar-nav ms-auto align-items-lg-center gap-2 gap-lg-3">
+                <li class="nav-item">
+                    <a href="{{ route('peminjam.index') }}" class="nav-link text-light">Beranda</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link text-light">Daftar Alat</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('peminjam.index') }}" class="nav-link active fw-bold text-info">Pinjaman Saya</a>
+                </li>
+
+                {{-- Nama User --}}
+                <li class="nav-item ps-lg-3 border-start-lg border-secondary">
+                    <span class="small text-secondary fw-bold d-block py-2 py-lg-0">
+                        {{ auth()->user()->name ?? 'Peminjam' }}
+                    </span>
+                </li>
+
+                {{-- Tombol Logout terpisah di <li> tersendiri --}}
+                <li class="nav-item">
+                    <form method="POST" action="{{ route('logout') }}" class="m-0 d-flex align-items-center">
+                        @csrf
+                        <button type="submit" class="btn btn-outline-danger btn-sm w-100 w-lg-auto">
+                            Keluar
+                        </button>
+                    </form>
+                </li>
+            </ul>
             </div>
         </div>
     </nav>
